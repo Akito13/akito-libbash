@@ -58,3 +58,24 @@ function checkIP {
     return 1;
   fi;
 }
+
+function dedupPATH {
+  ## Removes duplicate
+  ## entries from $PATH.
+  ## Modified version of
+  ## https://unix.stackexchange.com/a/40973/196626
+  if [ -n "${PATH}" ]; then
+    old_PATH="${PATH}:";
+    PATH="";
+    while [ -n "${old_PATH}" ]; do
+      x="${old_PATH%%:*}";
+      case ${PATH}: in
+        *:"$x":*) ;;
+        *) PATH="${PATH}:${x}";;
+      esac
+      old_PATH="${old_PATH#*:}";
+    done;
+    PATH="${PATH#:}";
+    unset old_PATH x;
+  fi;
+}
