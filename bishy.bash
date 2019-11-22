@@ -79,3 +79,14 @@ function dedupPATH {
     unset old_PATH x;
   fi;
 }
+
+function python_switch {
+  ## Switches default Python version
+  ## between Python2 and Python3.
+  python_version="$(python --version 2>&1)";
+  if [[ ${python_version} == "Python 2.7"* ]]; then
+    sudo update-alternatives --set python /usr/bin/python3;
+  elif [[ ${python_version} == "Python 3"* ]]; then
+    sudo update-alternatives --set python /usr/bin/python2;
+  fi;
+}
