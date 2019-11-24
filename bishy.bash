@@ -12,6 +12,13 @@ function checkPriv {
   fi;
 }
 
+# Section Start
+# Coloured Echoes
+function red_echo { echo -e "\033[31m$@\033[0m"; }
+function green_echo { echo -e "\033[32m$@\033[0m"; }
+function yellow_echo { echo -e "\033[33m$@\033[0m"; }
+# Section End
+
 function mergeEmptyLines {
   ## Merge each set of
   ## multiple consecutive 
