@@ -30,6 +30,9 @@ function echoInfo  { local args="$@"; white_brackets $(green_printf "INFO") && e
 function echoWarn  { local args="$@"; white_brackets $(yellow_printf "WARN") && echo " ${args}";  }
 function echoError { local args="$@"; white_brackets $(red_printf "ERROR") && echo " ${args}";    }
 
+# Silences commands' STDOUT as well as STDERR.
+function silence { local args="$@"; @{args} &>/dev/null; }
+
 function mergeEmptyLines {
   ## Merge each set of
   ## multiple consecutive 
