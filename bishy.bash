@@ -12,12 +12,23 @@ function checkPriv {
   fi;
 }
 
-# Section Start
-# Coloured Echoes
-function red_echo { echo -e "\033[31m$@\033[0m"; }
-function green_echo { echo -e "\033[32m$@\033[0m"; }
-function yellow_echo { echo -e "\033[33m$@\033[0m"; }
-# Section End
+# Coloured Outputs
+# Echoes
+function red_echo      { echo -e "\033[31m$@\033[0m";   }
+function green_echo    { echo -e "\033[32m$@\033[0m";   }
+function yellow_echo   { echo -e "\033[33m$@\033[0m";   }
+function white_echo    { echo -e "\033[1;37m$@\033[0m"; }
+# Printfs
+function red_printf    { printf "\033[31m$@\033[0m";    }
+function green_printf  { printf "\033[32m$@\033[0m";    }
+function yellow_printf { printf "\033[33m$@\033[0m";    }
+function white_printf  { printf "\033[1;37m$@\033[0m";  }
+
+# Debugging Outputs
+function white_brackets { local args="$@"; white_printf "["; printf "${args}"; white_printf "]";  }
+function echoInfo  { local args="$@"; white_brackets $(green_printf "INFO") && echo " ${args}";   }
+function echoWarn  { local args="$@"; white_brackets $(yellow_printf "WARN") && echo " ${args}";  }
+function echoError { local args="$@"; white_brackets $(red_printf "ERROR") && echo " ${args}";    }
 
 function mergeEmptyLines {
   ## Merge each set of
