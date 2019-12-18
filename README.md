@@ -1,3 +1,5 @@
+[![Build Status](https://drone.akito.ooo:52222/api/badges/Akito/akito-libbash/status.svg)](https://drone.akito.ooo:52222/Akito/akito-libbash)
+
 ## Akito's BASH library
 
 Some useful functions I commonly use in scripts.
