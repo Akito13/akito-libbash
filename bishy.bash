@@ -80,6 +80,53 @@ function checkIP {
   fi;
 }
 
+function path {
+  ## Linux PATH manager.
+  ##
+  ####  Usage
+  ##
+  ## path this # Adds current working dir to PATH.
+  ##
+  ## path /usr/special # Adds '/usr/special' to PATH.
+  ##
+  ## path remove this # Removes current working dir from PATH.
+  ##
+  ## path remove /usr/special # Removes '/usr/special' from PATH.
+  ##
+  ## path exists this # Shows if current working dir is part of PATH.
+  ##
+  ## path exists /usr/special # Shows if '/usr/special' is in PATH.
+  if [[ "$1" == "this" ]]; then
+    export PATH="${PATH}:${PWD}"
+  elif [[ "$1" == "remove" && "$2" != "this" ]]; then
+    local unnecessaryPath="$2"
+    export PATH=$(echo "${PATH}" | sed -e "s|:${unnecessaryPath}||")
+  elif [[ "$1" == "remove" && "$2" == "this" ]]; then
+    local unnecessaryPath="${PWD}"
+    export PATH=$(echo "${PATH}" | sed -e "s|:${unnecessaryPath}||")
+  elif [[ "$1" == "exists" && "$2" != "this" ]]; then
+    local testPath="$2"
+    if [[ $(echo $PATH | grep "${testPath}")$? == 0 ]]; then
+      echo "Path exists."
+      return 0
+    else
+      echo "Path does not exist."
+      return 1
+    fi
+  elif [[ "$1" == "exists" && "$2" == "this" ]]; then
+    if [[ $(echo $PATH | grep "${PWD}")$? == 0 ]]; then
+      echo "Path exists."
+      return 0
+    else
+      echo "Path does not exist."
+      return 1
+    fi
+  else
+    local newPath="$1"
+    export PATH="${PATH}:${newPath}"
+  fi
+}
+
 function dedupPATH {
   ## Removes duplicate
   ## entries from $PATH.
