@@ -1,0 +1,15 @@
+---
+kind: pipeline
+type: docker
+name: default
+
+platform:
+  os: linux
+  arch: arm
+
+steps:
+- name: main
+  image: alpine:latest
+  commands:
+  - apk add --no-cache sudo bash
+  - source bishy.bash
