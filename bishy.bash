@@ -4,14 +4,6 @@
 
 ## BASH library with common utils.
 
-function checkPriv {
-  if [[ "$EUID" != 0 ]]; then
-    ## Check your privilege.
-    echo "Please run me as root.";
-    exit 1;
-  fi;
-}
-
 # Coloured Outputs
 # Echoes
 function red_echo      { echo -e "\033[31m$@\033[0m";   }
@@ -32,6 +24,14 @@ function echoError { local args="$@"; white_brackets $(red_printf "ERROR") && ec
 
 # Silences commands' STDOUT as well as STDERR.
 function silence { local args="$@"; ${args} &>/dev/null; }
+
+function checkPriv {
+  if [[ "$EUID" != 0 ]]; then
+    ## Check your privilege.
+    echoError "Please run me as root.";
+    exit 1;
+  fi;
+}
 
 function mergeEmptyLines {
   ## Merge each set of
