@@ -9,3 +9,8 @@ To use, add the following to the top of your script:
 source bishy.bash
 ```
 Library has to be in the same directory as your script.
+
+Commonly used functions between e.g. OS setups:
+```bash
+source setup.bash
+```

@@ -8,8 +8,14 @@ platform:
   arch: arm
 
 steps:
-- name: main
+- name: bishy
   image: alpine:latest
   commands:
   - apk add --no-cache sudo bash
   - source bishy.bash
+
+- name: setup
+  image: alpine:latest
+  commands:
+  - apk add --no-cache sudo bash
+  - source setup.bash

@@ -4,6 +4,7 @@
 
 ## BASH library with common utils.
 
+####  Boilerplate of the Boilerplate
 # Coloured Outputs
 # Echoes
 function red_echo      { echo -e "\033[31m$@\033[0m";   }
@@ -32,6 +33,7 @@ function checkPriv {
     exit 1;
   fi;
 }
+####
 
 function mergeEmptyLines {
   ## Merge each set of
@@ -158,3 +160,5 @@ function python_switch {
     sudo update-alternatives --set python /usr/bin/python2;
   fi;
 }
+
+return
