@@ -6,7 +6,7 @@ function setPromptStyle {
   ## The file to be used as the first argument should be pretty much always a ~./bashrc or /etc/bash.bashrc file.
   ##
   ## Shows `git branch`.
-  ## Shows first 4 characters of git commit hash.
+  ## Shows first 7 characters of git commit hash.
   ## Shows up to first 24 characters of only the git commit title.
   ##
   ## Looks like this, but coloured, if in a Git repository:
