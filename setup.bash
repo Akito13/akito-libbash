@@ -23,7 +23,7 @@ function setPromptStyle {
     echoError "File already contains the prompt stylist! Quitting without duplicating the stylist."
     exit 0
   fi
-  cat >> bashrcFile <<"EOF"
+  cat >> ${bashrcFile} <<"EOF"
 function git_info {
   ###vzUMjwTuyMofDHhBQSHXPZeWWOljAbxQfcKWmpybkFXyrDAtklSJFNJW###
   git status >/dev/null 2>&1
