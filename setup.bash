@@ -15,7 +15,7 @@ function setPromptStyle {
   ## If not in a Git repository:
   ## $USER@$HOSTNAME:~/src$
   local bashrcFile="$1"
-  if ! [[ $(grep -q '###vzUMjwTuyMofDHhBQSHXPZeWWOljAbxQfcKWmpybkFXyrDAtklSJFNJW###' "$bashrcFile") != 0 ]]; then
+  if [[ $(grep -q '###vzUMjwTuyMofDHhBQSHXPZeWWOljAbxQfcKWmpybkFXyrDAtklSJFNJW###' "$bashrcFile")$? == 0 ]]; then
     echoError "File already contains the prompt stylist! Quitting without duplicating the stylist."
     exit 0
   fi
