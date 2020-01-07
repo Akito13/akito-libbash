@@ -19,13 +19,13 @@ function setPromptStyle {
   ## If not in a Git repository:
   ## $USER@$HOSTNAME:~/src$
   local bashrcFile="$1"
-  if [[ $(grep -q '###vzUMjwTuyMofDHhBQSHXPZeWWOljAbxQfcKWmpybkFXyrDAtklSJFNJW###' "$bashrcFile")$? == 0 ]]; then
-    echoError "File already contains the prompt stylist! Quitting without duplicating the stylist."
-    exit 0
+  if [[ $(grep -q '###startvzUMjwTuyMofDHhBQSHXPZeWWOljAbxQfcKWmpybkFXyrDAtklSJFNJW###' "$bashrcFile")$? == 0 ]]; then
+    sed -in '1,/###startvzUMjwTuyMofDHhBQSHXPZeWWOljAbxQfcKWmpybkFXyrDAtklSJFNJW###/p;/###endvzUMjwTuyMofDHhBQSHXPZeWWOljAbxQfcKWmpybkFXyrDAtklSJFNJW###/,$p' ${bashrcFile}
+    sed -in '/###startvzUMjwTuyMofDHhBQSHXPZeWWOljAbxQfcKWmpybkFXyrDAtklSJFNJW###/,/###endvzUMjwTuyMofDHhBQSHXPZeWWOljAbxQfcKWmpybkFXyrDAtklSJFNJW###/d'      ${bashrcFile}
   fi
   cat >> ${bashrcFile} <<"EOF"
+###startvzUMjwTuyMofDHhBQSHXPZeWWOljAbxQfcKWmpybkFXyrDAtklSJFNJW###
 function git_info {
-  ###vzUMjwTuyMofDHhBQSHXPZeWWOljAbxQfcKWmpybkFXyrDAtklSJFNJW###
   git status >/dev/null 2>&1
   if [[ $? == 0 ]]; then
     printf " \033[0;36m~ $(git rev-parse --abbrev-ref HEAD 2>/dev/null)\033[00m:\033[49;96m$(git log -1 --format="%H" | cut -c -7)\033[00m~>\033[38;5;50m\"$(git log -1 --oneline --pretty=%B | cut -d$'\n' -f1 | cut -c -24)\"\033[00m"
@@ -38,6 +38,7 @@ if [[ "$EUID" != 0 ]]; then
 else
   PS1='${debian_chroot:+($debian_chroot)}\[\033[1;31m\]\u\[\033[00m\]\[\033[01;33m\]@\[\033[00m\]\[\033[1;31m\]\h\[\033[01;37m\]:\[\033[01;34m\]\w\[\033[00m\]$(git_info)\[\033[01;37m\]\$\[\033[00m\] '
 fi
+###endvzUMjwTuyMofDHhBQSHXPZeWWOljAbxQfcKWmpybkFXyrDAtklSJFNJW###
 EOF
 }
 unset hereIam
