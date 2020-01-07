@@ -4,6 +4,16 @@ function setPromptStyle {
   ## Accepts a file as the first argument, where the procedures are pasted into
   ## so the file can be sourced and applied to the current shell.
   ## The file to be used as the first argument should be pretty much always a ~./bashrc or /etc/bash.bashrc file.
+  ##
+  ## Shows `git branch`.
+  ## Shows first 4 characters of git commit hash.
+  ## Shows up to first 24 characters of only the git commit title.
+  ##
+  ## Looks like this, but coloured, if in a Git repository:
+  ## $USER@$HOSTNAME:~/src/akito-libbash ~ master:4a7d945~>"Several improvements"$
+  ##
+  ## If not in a Git repository:
+  ## akito@DESKTOP-AP98KPV:~/src$
   local bashrcFile="$1"
   if ! [[ $(grep -q '###vzUMjwTuyMofDHhBQSHXPZeWWOljAbxQfcKWmpybkFXyrDAtklSJFNJW###' "$bashrcFile") != 0 ]]; then
     echoError "File already contains the prompt stylist! Quitting without duplicating the stylist."
