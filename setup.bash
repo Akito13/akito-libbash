@@ -1,4 +1,8 @@
-source "bishy.bash"
+#!/bin/bash
+# See LICENSE.
+# Copyright (C) 2019 Akito <the@akito.ooo>
+hereIam="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
+source "${hereIam}/bishy.bash"
 function setPromptStyle {
   ## Sets the look of the BASH prompt to a cooler one.
   ## Accepts a file as the first argument, where the procedures are pasted into
@@ -36,4 +40,5 @@ else
 fi
 EOF
 }
+unset hereIam
 return
