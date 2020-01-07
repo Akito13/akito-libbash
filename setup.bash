@@ -13,7 +13,7 @@ function setPromptStyle {
   ## $USER@$HOSTNAME:~/src/akito-libbash ~ master:4a7d945~>"Several improvements"$
   ##
   ## If not in a Git repository:
-  ## akito@DESKTOP-AP98KPV:~/src$
+  ## $USER@$HOSTNAME:~/src$
   local bashrcFile="$1"
   if ! [[ $(grep -q '###vzUMjwTuyMofDHhBQSHXPZeWWOljAbxQfcKWmpybkFXyrDAtklSJFNJW###' "$bashrcFile") != 0 ]]; then
     echoError "File already contains the prompt stylist! Quitting without duplicating the stylist."
