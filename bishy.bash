@@ -1,7 +1,20 @@
 #!/bin/bash
-# See LICENSE.
-# Copyright (C) 2019 Akito
-
+#########################################################################
+# Copyright (C) 2020 Akito <the@akito.ooo>                              #
+#                                                                       #
+# This program is free software: you can redistribute it and/or modify  #
+# it under the terms of the GNU General Public License as published by  #
+# the Free Software Foundation, either version 3 of the License, or     #
+# (at your option) any later version.                                   #
+#                                                                       #
+# This program is distributed in the hope that it will be useful,       #
+# but WITHOUT ANY WARRANTY; without even the implied warranty of        #
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the          #
+# GNU General Public License for more details.                          #
+#                                                                       #
+# You should have received a copy of the GNU General Public License     #
+# along with this program.  If not, see <http://www.gnu.org/licenses/>. #
+#########################################################################
 ## BASH library with common utils.
 
 ####  Boilerplate of the Boilerplate
@@ -59,14 +72,20 @@ function truncEmptyLines {
   fi;
 }
 
-function rmDisused {
-  ## Remove string "$2" within file "$1".
-  local file="$1";
-  local entry="$2";
-  while read -r line; do
-    [[ ! $line =~ ${entry} ]] && echo "$line";
-  done <${file} > NIYTyOOyTYIN;
-  mv NIYTyOOyTYIN ${file};
+function rmTheseLines {
+  ## Remove variable amount of strings
+  ## provided after the first argument
+  ## within file provided as the first
+  ## argument.
+  local file="$1"
+  declare -a ENTRIES
+  ENTRIES=( "$@" )
+  for entry in "${ENTRIES[@]:1}"; do
+    while read -r line; do
+      [[ ! ${line} =~ ${entry} ]] && echo "${line}";
+    done <${file} > NIYTyOOyTYIN;
+    mv NIYTyOOyTYIN ${file};
+  done
 }
 
 function checkIP {
