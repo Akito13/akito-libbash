@@ -38,14 +38,8 @@ function echoError { local args="$@"; white_brackets $(red_printf "ERROR") && ec
 
 # Silences commands' STDOUT as well as STDERR.
 function silence { local args="$@"; ${args} &>/dev/null; }
-
-function checkPriv {
-  if [[ "$EUID" != 0 ]]; then
-    ## Check your privilege.
-    echoError "Please run me as root.";
-    exit 1;
-  fi;
-}
+# Check your privilege.
+function checkPriv { if [[ "$EUID" != 0 ]]; then echoError "Please run me as root."; exit 1; fi; }
 ####
 
 function mergeEmptyLines {
