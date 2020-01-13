@@ -18,28 +18,29 @@
 ## BASH library with common utils.
 
 ####  Boilerplate of the Boilerplate
-# Coloured Outputs
-# Echoes
+# Coloured Echoes
 function red_echo      { echo -e "\033[31m$@\033[0m";   }
 function green_echo    { echo -e "\033[32m$@\033[0m";   }
 function yellow_echo   { echo -e "\033[33m$@\033[0m";   }
 function white_echo    { echo -e "\033[1;37m$@\033[0m"; }
-# Printfs
+# Coloured Printfs
 function red_printf    { printf "\033[31m$@\033[0m";    }
 function green_printf  { printf "\033[32m$@\033[0m";    }
 function yellow_printf { printf "\033[33m$@\033[0m";    }
 function white_printf  { printf "\033[1;37m$@\033[0m";  }
-
 # Debugging Outputs
 function white_brackets { local args="$@"; white_printf "["; printf "${args}"; white_printf "]";  }
 function echoInfo  { local args="$@"; white_brackets $(green_printf "INFO") && echo " ${args}";   }
 function echoWarn  { local args="$@"; white_brackets $(yellow_printf "WARN") && echo " ${args}";  }
 function echoError { local args="$@"; white_brackets $(red_printf "ERROR") && echo " ${args}";    }
-
 # Silences commands' STDOUT as well as STDERR.
 function silence { local args="$@"; ${args} &>/dev/null; }
 # Check your privilege.
 function checkPriv { if [[ "$EUID" != 0 ]]; then echoError "Please run me as root."; exit 1; fi; }
+# Returns 0 if script is sourced, returns 1 if script is run in a subshell.
+function checkSrc { (return 0 2>/dev/null); if [[ "$?" == 0 ]]; then return 0; fi; }
+# Prints directory the script is run from. Useful for local imports of BASH modules.
+function whereAmI { printf "$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )";  }
 ####
 
 function mergeEmptyLines {
@@ -72,14 +73,15 @@ function rmTheseLines {
   ## within file provided as the first
   ## argument.
   local file="$1"
+  local tmp_file="$(mktemp -p "/tmp" -t apt-sources.XXXXXXXXXXXXXXXXXX)"
   declare -a ENTRIES
   ENTRIES=( "$@" )
   for entry in "${ENTRIES[@]:1}"; do
     while read -r line; do
       [[ ! ${line} =~ ${entry} ]] && echo "${line}";
-    done <${file} > NIYTyOOyTYIN;
-    mv NIYTyOOyTYIN ${file};
+    done <${file} >> ${tmp_file};
   done
+  mv ${tmp_file} ${file};
 }
 
 function checkIP {
