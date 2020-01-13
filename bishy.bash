@@ -38,7 +38,7 @@ function silence { local args="$@"; ${args} &>/dev/null; }
 # Check your privilege.
 function checkPriv { if [[ "$EUID" != 0 ]]; then echoError "Please run me as root."; exit 1; fi; }
 # Returns 0 if script is sourced, returns 1 if script is run in a subshell.
-function checkSrc { (return 0 2>/dev/null); if [[ "$?" == 0 ]]; then return 0; fi; }
+function checkSrc { (return 0 2>/dev/null); if [[ "$?" == 0 ]]; then return 0; else return 1; fi; }
 # Prints directory the script is run from. Useful for local imports of BASH modules.
 function whereAmI { printf "$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )";  }
 ####
