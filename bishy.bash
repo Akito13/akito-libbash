@@ -42,6 +42,8 @@ function checkSrc { (return 0 2>/dev/null); if [[ "$?" == 0 ]]; then return 0; e
 # Prints directory the script is run from. Useful for local imports of BASH modules.                 #
 # This only works if this function is defined in the actual script. So copy pasting is needed.       #
 function whereAmI { printf "$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )";   }  #
+# Alternatively, this alias works in the sourcing script, but you need to enable alias expansion.    #
+alias whereIsMe='printf "$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"'         #
 ######################################################################################################
 
 function mergeEmptyLines {
