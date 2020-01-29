@@ -40,6 +40,7 @@ function checkPriv { if [[ "$EUID" != 0 ]]; then echoError "Please run me as roo
 # Returns 0 if script is sourced, returns 1 if script is run in a subshell.                          #
 function checkSrc { (return 0 2>/dev/null); if [[ "$?" == 0 ]]; then return 0; else return 1; fi; }  #
 # Prints directory the script is run from. Useful for local imports of BASH modules.                 #
+# This only works if this function is defined in the actual script. So copy pasting is needed.       #
 function whereAmI { printf "$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )";   }  #
 ######################################################################################################
 
