@@ -176,4 +176,20 @@ function python_switch {
   fi;
 }
 
+function pure_eval {
+  ## Sanitizes input before evaluation.
+  ## Extended version of
+  ## https://stackoverflow.com/a/52538533/7061105
+  local args=( "$@" )
+  function token_quote {
+   local quoted=()
+   for token; do
+     quoted+=( "$(printf '%q' "$token")" )
+   done
+   printf '%s\n' "${quoted[*]}"
+  }
+  eval "$(token_quote "${args[@]}")"
+  unset -f token_quote
+}
+
 return
