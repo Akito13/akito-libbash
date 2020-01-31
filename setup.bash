@@ -34,10 +34,14 @@ function setPromptStyle {
   ## $USER@$HOSTNAME:~/src$
   local bashrcFile="$1"
   if [[ $(grep -q '###startvzUMjwTuyMofDHhBQSHXPZeWWOljAbxQfcKWmpybkFXyrDAtklSJFNJW###' "$bashrcFile")$? == 0 ]]; then
-    sed -in '1,/###startvzUMjwTuyMofDHhBQSHXPZeWWOljAbxQfcKWmpybkFXyrDAtklSJFNJW###/p;/###endvzUMjwTuyMofDHhBQSHXPZeWWOljAbxQfcKWmpybkFXyrDAtklSJFNJW###/,$p' ${bashrcFile}
-    sed -in '/###startvzUMjwTuyMofDHhBQSHXPZeWWOljAbxQfcKWmpybkFXyrDAtklSJFNJW###/,/###endvzUMjwTuyMofDHhBQSHXPZeWWOljAbxQfcKWmpybkFXyrDAtklSJFNJW###/d'      ${bashrcFile}
+    sed -in '1,/###startvzUMjwTuyMofDHhBQSHXPZeWWOljAbxQfcKWmpybkFXyrDAtklSJFNJW###/p;/###endvzUMjwTuyMofDHhBQSHXPZeWWOljAbxQfcKWmpybkFXyrDAtklSJFNJW###/,$p' "${bashrcFile}"
+    sed -in '/###startvzUMjwTuyMofDHhBQSHXPZeWWOljAbxQfcKWmpybkFXyrDAtklSJFNJW###/d' "${bashrcFile}"
+    sed -in '/###endvzUMjwTuyMofDHhBQSHXPZeWWOljAbxQfcKWmpybkFXyrDAtklSJFNJW###/d'   "${bashrcFile}"
   fi
+  printf "\n\n\n\n" >> "${bashrcFile}"
+  truncEmptyLines "${bashrcFile}"
   cat >> ${bashrcFile} <<"EOF"
+
 ###startvzUMjwTuyMofDHhBQSHXPZeWWOljAbxQfcKWmpybkFXyrDAtklSJFNJW###
 function git_info {
   git status >/dev/null 2>&1
