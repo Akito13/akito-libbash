@@ -48,9 +48,9 @@ function git_info {
   fi
 }
 if [[ "$EUID" != 0 ]]; then
-  PS1='${debian_chroot:+($debian_chroot)}\[\033[1;32m\]\u\[\033[00m\]\[\033[01;33m\]@\[\033[00m\]\[\033[1;32m\]\h\[\033[01;37m\]:\[\033[01;34m\]\w\[\033[00m\]$(git_info)\[\033[01;37m\]\$\[\033[00m\] '
+  PS1='${debian_chroot:+($debian_chroot)}\[\033[1;32m\]\u\[\033[00m\]\[\033[01;33m\]@\[\033[00m\]\[\033[1;32m\]\h\[\033[01;37m\]:\[\033[01;34m\]\w\[\033[00m\]$(git_info)\[\033[01;37m\]\$\[\033[00m\]\n'
 else
-  PS1='${debian_chroot:+($debian_chroot)}\[\033[1;31m\]\u\[\033[00m\]\[\033[01;33m\]@\[\033[00m\]\[\033[1;31m\]\h\[\033[01;37m\]:\[\033[01;34m\]\w\[\033[00m\]$(git_info)\[\033[01;37m\]\$\[\033[00m\] '
+  PS1='${debian_chroot:+($debian_chroot)}\[\033[1;31m\]\u\[\033[00m\]\[\033[01;33m\]@\[\033[00m\]\[\033[1;31m\]\h\[\033[01;37m\]:\[\033[01;34m\]\w\[\033[00m\]$(git_info)\[\033[01;37m\]\$\[\033[00m\]\n'
 fi
 ###endvzUMjwTuyMofDHhBQSHXPZeWWOljAbxQfcKWmpybkFXyrDAtklSJFNJW###
 EOF
