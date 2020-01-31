@@ -62,7 +62,7 @@ function truncEmptyLines {
   ## Leave only a single one.
   local file="$1";
   if [ -s ${file} ]; then
-    while [[ $(tail -n 1 ${file}) == "" ]]; do
+    while [[ $(tail -n 1 ${file}) == "" ]] && [[ -s ${file} ]]; do
       truncate -cs -1 ${file};
     done;
   else
