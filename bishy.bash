@@ -127,7 +127,8 @@ function path {
     echo -e "${PATH//:/\\n}"
   }
   function dup_warn {
-    echoError "Path is already in PATH. Not adding a duplicate."
+    local dup_path="$1"
+    echoError "${dup_path} is already in PATH. Not adding a duplicate."
   }
   function path_exists {
     echoInfo "Path exists."
@@ -139,8 +140,12 @@ function path {
     export PATH="${PATH}:${PWD}"
   }
   function export_custom_path {
-    local customPath="$1"
-    export PATH="${PATH}:${customPath}"
+    local customPaths=( "${@:2}" )
+    local IFS="$1"
+    shift
+    #export PATH="${PATH}:${customPaths[@]}"
+    export PATH="${PATH}:$(printf "$*")"
+    unset IFS
   }
   function remove_custom_path {
     ## This complicated function is needed to
@@ -153,8 +158,8 @@ function path {
     ## IFS change needed, to properly add the elements to the array, otherwise the array would split each element
     ## by using the space character as a delimiter, which would lead to a path containing spaces resulting in
     ## more than a single element.
-    IFS='"'
     local -a unnecessaryPaths=( "$@" )
+    IFS='"'
     # Splitting the PATH into an array by using a double quote as the delimiter.
     local split_path=( $(printf "${PATH}" | sed -e '0,/^/ s//"/g' -e 's/:/"/g' -e '$ s/$/"/g') )
     ## Declaration of temporary split path, where I will add back the original PATH delimiters, i.e. colons,
@@ -219,10 +224,8 @@ function path {
     for entry in "${unnecessaryPaths[@]}"; do
       if does_path_exist "${entry}"; then
         remove_custom_path "${entry}"
-        return 0
       else
         path_exists_not
-        return 1
       fi
     done
   elif [[ "$1" == "remove" && "$2" == "this" ]]; then
@@ -253,16 +256,26 @@ function path {
       return 1
     fi
   else
-    local newPath="$1"
-    if [[ "${newPath}" =~ ^[/] ]]; then
-      if does_path_exist "${newPath}"; then
-        dup_warn
+    local newPaths=( "${@}" )
+    local verifiedPaths=( )
+    for entry in "${newPaths[@]}"; do
+      if [[ "${entry}" =~ ^[/] ]]; then
+        if does_path_exist "${entry}"; then
+          dup_warn "${entry}"
+          continue
+        else
+          verifiedPaths+=( "${entry}" )
+          continue
+        fi
       else
-        export_custom_path "${newPath}"
+        echoError "Provided path does not begin with a path separator."
+        yellow_echo "Have you provided a correct asolute path?"
       fi
-    else
-      echoError "Provided path does not begin with a path separator."
-      yellow_echo "Have you provided a correct asolute path?"
+    done
+    if   [[ "${#verifiedPaths[@]}" > 0 ]]; then
+      export_custom_path : "${verifiedPaths[@]}"
+    elif [[ "${#verifiedPaths[@]}" == 0 ]]; then
+      echoInfo "PATH already contains all paths provided."
     fi
   fi
   unset -f dup_warn
