@@ -186,9 +186,13 @@ function path {
       done
     done
     for entry in "${split_path[@]}"; do
+      ## This foreach loop iterates over the new split_path's elements, containing only the paths wanted.
+      ## It adds them to a new array, with a colon as a prefix, to ready it for further processing.
       temp_split_path+=( "$( printf ":${entry}")" )
     done
+    ## Finally, this is the joined path, that represents the new PATH as a single string, instead of an array.
     joined_path="$( echo "${temp_split_path[@]}" | sed -r -e 's/[[:space:]]+:/:/g' -e 's/:://' )"
+    ## Exporting the temporary modified PATH to the actual PATH.
     export PATH=${joined_path}
     ## Setting IFS back to default value.
     unset IFS
@@ -211,14 +215,16 @@ function path {
       export_custom_path "${testPath}"
     fi
   elif [[ "$1" == "remove" && "$2" != "this" ]]; then
-    local unnecessaryPath="$2"
-    if does_path_exist "${unnecessaryPath}"; then
-      remove_custom_path "${unnecessaryPath}"
-      return 0
-    else
-      path_exists_not
-      return 1
-    fi
+    local -a unnecessaryPaths=( "${@:2}" )
+    for entry in "${unnecessaryPaths[@]}"; do
+      if does_path_exist "${entry}"; then
+        remove_custom_path "${entry}"
+        return 0
+      else
+        path_exists_not
+        return 1
+      fi
+    done
   elif [[ "$1" == "remove" && "$2" == "this" ]]; then
     local unnecessaryPath="${PWD}"
     if does_path_exist "${unnecessaryPath}"; then
