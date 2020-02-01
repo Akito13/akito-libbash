@@ -75,10 +75,9 @@ function rmTheseLines {
   ## within file provided as the first
   ## argument.
   local file="$1"
-  local tmp_file="$(mktemp -p "/tmp" -t apt-sources.XXXXXXXXXXXXXXXXXX)"
-  declare -a ENTRIES
-  ENTRIES=( "$@" )
-  for entry in "${ENTRIES[@]:1}"; do
+  local tmp_file="$(mktemp -p "/tmp" -t lines.XXXXXXXXXXXXXXXXXX)"
+  local -a entries=( "$@" )
+  for entry in "${entries[@]:1}"; do
     while read -r line; do
       [[ ! ${line} =~ ${entry} ]] && echo "${line}";
     done <${file} >> ${tmp_file};
