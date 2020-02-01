@@ -138,9 +138,6 @@ function path {
     local path="$1"
     echoInfo "${path} does not exist."
   }
-  function export_current_path {
-    export PATH="${PATH}:${PWD}"
-  }
   function export_custom_path {
     local customPaths=( "${@:2}" )
     local IFS="$1"
