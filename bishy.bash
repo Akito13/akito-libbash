@@ -128,13 +128,15 @@ function path {
   }
   function dup_warn {
     local dup_path="$1"
-    echoError "${dup_path} is already in PATH. Not adding a duplicate."
+    echoWarn "${dup_path} is already in PATH. Not adding a duplicate."
   }
   function path_exists {
-    echoInfo "Path exists."
+    local path="$1"
+    echoInfo "${path} does exist."
   }
   function path_exists_not {
-    echoInfo "Path does not exist."
+    local path="$1"
+    echoInfo "${path} does not exist."
   }
   function export_current_path {
     export PATH="${PATH}:${PWD}"
