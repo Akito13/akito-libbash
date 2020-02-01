@@ -143,8 +143,55 @@ function path {
     export PATH="${PATH}:${customPath}"
   }
   function remove_custom_path {
-    local unnecessaryPath="$1"
-    export PATH=$(echo "${PATH}" | sed "s|:${unnecessaryPath}||")
+    ## This complicated function is needed to
+    ## 1. Remove ONLY the paths you want to remove so in case you are trying to remove /usr
+    ## then /usr/bin will not get unintentionally deleted.
+    ## 2. Work with paths containing spaces! This is needed on WSL systems, as the Windows-native
+    ## paths are automatically added to the PATH within WSL.
+    ## This means, that WSL's PATH will always contain paths with spaces in it, because Windows is so "amazing".
+    #
+    ## IFS change needed, to properly add the elements to the array, otherwise the array would split each element
+    ## by using the space character as a delimiter, which would lead to a path containing spaces resulting in
+    ## more than a single element.
+    IFS='"'
+    local -a unnecessaryPaths=( "$@" )
+    # Splitting the PATH into an array by using a double quote as the delimiter.
+    local split_path=( $(printf "${PATH}" | sed -e '0,/^/ s//"/g' -e 's/:/"/g' -e '$ s/$/"/g') )
+    ## Declaration of temporary split path, where I will add back the original PATH delimiters, i.e. colons,
+    ## when the split_path array will be joined back together, after the unnecessaryPaths have been removed.
+    local -a temp_split_path
+    ## Declaration of the final path that will result into the new and shiny clean PATH.
+    local joined_path
+    for entry in "${unnecessaryPaths[@]}"; do
+      ## Iterates through each element of the array consisting of unwanted paths.
+      ## Each iteration the split_path is iterated to search for occurances of the unwanted paths,
+      ## so they can be individually unset. This means that the index containing the unwanted path
+      ## will remain, but the value itself will be set to `null`.
+      local unnecessaryPath="${entry}"
+      for ((i=0; i < ${#split_path[@]}; i++)); do
+        ## This for loop iterates over each element of PATH as an array, by index.
+        ## Using actual for loop for compatability reasons. Not sure anymore if it is still needed, but there
+        ## is no significant difference in using either, if both work. So no need to change/test if a foreach
+        ## loop could work, as well.
+        #
+        ## Because making the code more human readable is pretty much always better.
+        local counter=$i
+        ## The actual value of the current element in the array, retrieved by index.
+        local entry="${split_path[$i]}"
+        if [[ "${entry}" == "${unnecessaryPath}" ]]; then
+          ## Triggers if the current element of the PATH array equals to the unwanted provided path.
+          ## Setting the value of the current element by index to `null`.
+          unset "split_path[$counter]"
+        fi
+      done
+    done
+    for entry in "${split_path[@]}"; do
+      temp_split_path+=( "$( printf ":${entry}")" )
+    done
+    joined_path="$( echo "${temp_split_path[@]}" | sed -r -e 's/[[:space:]]+:/:/g' -e 's/:://' )"
+    export PATH=${joined_path}
+    ## Setting IFS back to default value.
+    unset IFS
   }
   function does_path_exist {
     local testPath="$1"
