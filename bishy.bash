@@ -53,8 +53,7 @@ function mergeEmptyLines {
   ## empty line within the
   ## provided text file.
   local file="$1"
-  cat ${file} | \
-  sed -i '$!N; /^\(.*\)\n\1$/!P; D' ${file}
+  sed -in '$!N; /^\(.*\)\n\1$/!P; D' ${file}
 }
 
 function truncEmptyLines {
