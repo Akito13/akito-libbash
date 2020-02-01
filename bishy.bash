@@ -109,10 +109,6 @@ function checkPort {
   fi
 }
 
-function PATH {
-	echo -e "${PATH//:/\\n}"
-}
-
 function path {
   ## Linux PATH manager.
   ##
@@ -129,6 +125,9 @@ function path {
   ## path exists this # Shows if current working dir is part of PATH.
   ##
   ## path exists /usr/special # Shows if '/usr/special' is in PATH.
+  function format_PATH {
+    echo -e "${PATH//:/\\n}"
+  }
   function dup_warn {
     echoError "Path is already in PATH. Not adding a duplicate."
   }
@@ -153,7 +152,7 @@ function path {
     local testPath="$1"
     if echo "${PATH}" | grep -q ":${testPath}:"; then
       return 0
-    elif echo ":$(PATH | tail -n1):" | grep -q ":${testPath}:"; then
+    elif echo ":$(format_PATH | tail -n1):" | grep -q ":${testPath}:"; then
       return 0
     else
       return 1
@@ -221,6 +220,7 @@ function path {
   unset -f export_custom_path
   unset -f remove_custom_path
   unset -f does_path_exist
+  unset -f format_PATH
 }
 
 function dedupPATH {
