@@ -109,6 +109,10 @@ function checkPort {
   fi
 }
 
+function PATH {
+	echo -e "${PATH//:/\\n}"
+}
+
 function path {
   ## Linux PATH manager.
   ##
@@ -125,35 +129,98 @@ function path {
   ## path exists this # Shows if current working dir is part of PATH.
   ##
   ## path exists /usr/special # Shows if '/usr/special' is in PATH.
-  if [[ "$1" == "this" ]]; then
+  function dup_warn {
+    echoError "Path is already in PATH. Not adding a duplicate."
+  }
+  function path_exists {
+    echoInfo "Path exists."
+  }
+  function path_exists_not {
+    echoInfo "Path does not exist."
+  }
+  function export_current_path {
     export PATH="${PATH}:${PWD}"
-  elif [[ "$1" == "remove" && "$2" != "this" ]]; then
-    local unnecessaryPath="$2"
-    export PATH=$(echo "${PATH}" | sed -e "s|:${unnecessaryPath}||")
-  elif [[ "$1" == "remove" && "$2" == "this" ]]; then
-    local unnecessaryPath="${PWD}"
-    export PATH=$(echo "${PATH}" | sed -e "s|:${unnecessaryPath}||")
-  elif [[ "$1" == "exists" && "$2" != "this" ]]; then
-    local testPath="$2"
-    if [[ $(echo $PATH | grep "${testPath}")$? == 0 ]]; then
-      echo "Path exists."
+  }
+  function export_custom_path {
+    local customPath="$1"
+    export PATH="${PATH}:${customPath}"
+  }
+  function remove_custom_path {
+    local unnecessaryPath="$1"
+    export PATH=$(echo "${PATH}" | sed "s|:${unnecessaryPath}||")
+  }
+  function does_path_exist {
+    local testPath="$1"
+    if echo "${PATH}" | grep -q ":${testPath}:"; then
+      return 0
+    elif echo ":$(PATH | tail -n1):" | grep -q ":${testPath}:"; then
       return 0
     else
-      echo "Path does not exist."
+      return 1
+    fi
+  }
+  if [[ "$1" == "this" ]]; then
+    local testPath="${PWD}"
+    if does_path_exist "${testPath}"; then
+      dup_warn
+    else
+      export_custom_path "${testPath}"
+    fi
+  elif [[ "$1" == "remove" && "$2" != "this" ]]; then
+    local unnecessaryPath="$2"
+    if does_path_exist "${unnecessaryPath}"; then
+      remove_custom_path "${unnecessaryPath}"
+      return 0
+    else
+      path_exists_not
+      return 1
+    fi
+  elif [[ "$1" == "remove" && "$2" == "this" ]]; then
+    local unnecessaryPath="${PWD}"
+    if does_path_exist "${unnecessaryPath}"; then
+      remove_custom_path "${unnecessaryPath}"
+      return 0
+    else
+      path_exists_not
+      return 1
+    fi
+  elif [[ "$1" == "exists" && "$2" != "this" ]]; then
+    local testPath="$2"
+    if does_path_exist "${testPath}"; then
+      path_exists
+      return 0
+    else
+      path_exists_not
       return 1
     fi
   elif [[ "$1" == "exists" && "$2" == "this" ]]; then
-    if [[ $(echo $PATH | grep "${PWD}")$? == 0 ]]; then
-      echo "Path exists."
+    local testPath="${PWD}"
+    if does_path_exist "${testPath}"; then
+      path_exists
       return 0
     else
-      echo "Path does not exist."
+      path_exists_not
       return 1
     fi
   else
     local newPath="$1"
-    export PATH="${PATH}:${newPath}"
+    if [[ "${newPath}" =~ ^[/] ]]; then
+      if does_path_exist "${newPath}"; then
+        dup_warn
+      else
+        export_custom_path "${newPath}"
+      fi
+    else
+      echoError "Provided path does not begin with a path separator."
+      yellow_echo "Have you provided a correct asolute path?"
+    fi
   fi
+  unset -f dup_warn
+  unset -f path_exists
+  unset -f path_exists_not
+  unset -f export_custom_path
+  unset -f remove_custom_path
+  unset -f does_path_exist
 }
 
 function dedupPATH {
