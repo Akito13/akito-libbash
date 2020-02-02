@@ -65,7 +65,7 @@ function mergeEmptyLines {
   ## linebreaks will be merged,
   ## keeping lines with spaces
   ## untouched.
-  if [[ "$1" == "strict" ]]
+  if [[ "$1" == "strict" ]]; then
     local file="$2"
     sed -in '$!N; /^\(.*\)\n\1$/!P; D' ${file}
   else
