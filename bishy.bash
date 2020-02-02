@@ -52,8 +52,27 @@ function mergeEmptyLines {
   ## empty lines into a single
   ## empty line within the
   ## provided text file.
-  local file="$1"
-  sed -in '$!N; /^\(.*\)\n\1$/!P; D' ${file}
+  ##
+  ## If only a file is provided
+  ## as the first argument, then
+  ## redundant linebreaks are
+  ## merged as well as lines
+  ## containing any number of
+  ## spaces.
+  ## If the first argument is
+  ## "strict" and the second
+  ## a filename, then only
+  ## linebreaks will be merged,
+  ## keeping lines with spaces
+  ## untouched.
+  if [[ "$1" == "strict" ]]
+    local file="$2"
+    sed -in '$!N; /^\(.*\)\n\1$/!P; D' ${file}
+  else
+    local file="$1"
+    sed -in -e '$!N; /^\(.*\)\n\1$/!P; D' \
+            -e '/^\s*$/d' ${file}
+  fi
 }
 
 function truncEmptyLines {
@@ -99,6 +118,9 @@ function checkIP {
 }
 
 function checkPort {
+  ## Any Port in the technical Port range is accepted.
+  ## Currently Ports like "5111/tcp" are accepted as well
+  ## and I don't see a need to make it stricter.
   local port="$1"
   if [[ ${port} =~ ^([0-9]{1,4}|[1-5][0-9]{4}|6[0-4][0-9]{3}|65[0-4][0-9]{2}|655[0-2][0-9]|6553[0-5])$|(/tcp|/udp)$ ]]; then
     return 0
