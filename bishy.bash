@@ -139,10 +139,7 @@ function path {
     echoInfo "${path} does not exist."
   }
   function export_custom_path {
-    local customPaths=( "${@:2}" )
-    local IFS="$1"
-    shift
-    #export PATH="${PATH}:${customPaths[@]}"
+    local IFS=":"
     export PATH="${PATH}:$(printf "$*")"
     unset IFS
   }
@@ -272,7 +269,7 @@ function path {
       fi
     done
     if   [[ "${#verifiedPaths[@]}" > 0 ]]; then
-      export_custom_path : "${verifiedPaths[@]}"
+      export_custom_path "${verifiedPaths[@]}"
     elif [[ "${#verifiedPaths[@]}" == 0 ]]; then
       echoInfo "PATH already contains all paths provided."
     fi
