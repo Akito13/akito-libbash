@@ -30,9 +30,11 @@ function yellow_printf { printf "\033[33m$@\033[0m";    }                       
 function white_printf  { printf "\033[1;37m$@\033[0m";  }                                                               #
 # Debugging Outputs                                                                                                     #
 function white_brackets { local args="$@"; white_printf "["; printf "${args}"; white_printf "]"; }                      #
-function echoInfo   { local args="$@"; white_brackets $(green_printf "INFO") && echo " ${args}"; }                      #
-function echoWarn   { local args="$@";  echo "$(white_brackets "$(yellow_printf "WARN")" && echo " ${args}";)" 1>&2; }  #
-function echoError  { local args="$@"; echo "$(white_brackets "$(red_printf    "ERROR")" && echo " ${args}";)" 1>&2; }  #
+function echoDebug  { local args="$@"; if [[ ${debug_flag} == true ]]; then                                             #
+white_brackets "$(white_printf   "DEBUG")" && echo " ${args}"; fi; }                                                    #
+function echoInfo   { local args="$@"; white_brackets "$(green_printf  "INFO" )"  && echo " ${args}"; }                 #
+function echoWarn   { local args="$@"; white_brackets "$(yellow_printf "WARN" )"  && echo " ${args}"; 1>&2; }           #
+function echoError  { local args="$@"; white_brackets "$(red_printf    "ERROR")"  && echo " ${args}"; 1>&2; }           #
 # Silences commands' STDOUT as well as STDERR.                                                                          #
 function silence { local args="$@"; ${args} &>/dev/null; }                                                              #
 # Check your privilege.                                                                                                 #
@@ -44,6 +46,7 @@ function checkSrc { (return 0 2>/dev/null); if [[ "$?" == 0 ]]; then return 0; e
 function whereAmI { printf "$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )";   }                     #
 # Alternatively, this alias works in the sourcing script, but you need to enable alias expansion.                       #
 alias whereIsMe='printf "$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"'                            #
+debug_flag=false
 #########################################################################################################################
 
 function mergeEmptyLines {
