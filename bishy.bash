@@ -16,7 +16,6 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>. #
 #########################################################################
 ## BASH library with common utils.
-
 #################################   Boilerplate of the Boilerplate   ####################################################
 # Coloured Echoes                                                                                                       #
 function red_echo      { echo -e "\033[31m$@\033[0m";   }                                                               #
@@ -340,6 +339,15 @@ function python_switch {
   fi;
 }
 
+function show_args {
+  ## Reliable way of showing the
+  ## number of arguments given.
+  ## Useful for debugging Bash behaviour.
+  printf "%d args:" "$#"
+  printf " <%s>" "$@"
+  echo
+}
+
 function pure_eval {
   ## Sanitizes input before evaluation.
   ## Extended version of
@@ -354,6 +362,94 @@ function pure_eval {
   }
   eval "$(token_quote "${args[@]}")"
   unset -f token_quote
+}
+
+function prepend_text {
+  ## May break if input files are too large.
+  ## By default adds a single \n to the prepending text.
+  local prepending_text
+  local prepending_text_file
+  local original_text_file
+  local merged_text
+  local newlines_count=1
+  local newlines='\n'
+  local arg_count="$#"
+  local OPTIND
+  function usage {
+    ## Usage info output.
+      local indent='    '
+      white_echo "Usage"
+      echo
+      yellow_echo "${indent}${FUNCNAME[0]} -e <PREPENDING_TEXT>      -o <ORIGINAL_TEXT_FILE> [-n NEWLINES_AFTER_PREP_TEXT_COUNT]"
+      yellow_echo "${indent}${FUNCNAME[0]} -p <PREPENDING_TEXT_FILE> -o <ORIGINAL_TEXT_FILE> [-n NEWLINES_AFTER_PREP_TEXT_COUNT]"
+      echo
+      echo "${indent}Default amount of newlines after prepended text is ${newlines_count}."
+      echo
+      white_echo "Examples"
+      echo
+      yellow_echo "${indent}${FUNCNAME[0]} -e \"This sentence will be prepended.\" -o \"myfile.txt\" -n 3"
+      echo
+      echo "${indent}Prepend 'This sentence will be prepended.' to file 'myfile.txt'."
+      echo "${indent}3 newlines will be added to the end of the prepended text."
+      echo
+      echo
+      echo
+      yellow_echo "${indent}${FUNCNAME[0]} -p \"prepend.txt\" -o \"targetfile.txt\" -n 5"
+      echo
+      echo "${indent}Prepend the content of 'prepend.txt' to file 'targetfile.txt'."
+      echo "${indent}5 newlines will be added to the end of the prepended text."
+      echo
+      echo
+  }
+  if [[ "${arg_count}" == 0 ]] || [[ "$1" =~ help|--help|-h ]]; then
+    echoError "Invalid argument."
+    usage
+    return 1
+  fi
+  while getopts ":e:p:o:n:" opt; do
+    case "${opt}" in
+      e) prepending_text="${OPTARG}"; [[ -n "${prepending_text}" ]] || { echoError "Must provide $(yellow_printf PREPENDING_TEXT) to option." && usage; return 1; }
+         ;;
+      p) prepending_text_file="${OPTARG}"; [[ -f "${prepending_text_file}" ]] || { echoError "$(yellow_printf PREPENDING_TEXT_FILE) unavailable." && usage; return 1; }
+         [[ -r "${prepending_text_file}" ]] || { echoError "$(yellow_printf PREPENDING_TEXT_FILE) is not readable." && usage; return 1; }
+         ;;
+      o) original_text_file="${OPTARG}"; [[ -f "${original_text_file}" ]] || { echoError "$(yellow_printf ORIGINAL_TEXT_FILE) unavailable." && usage; return 1; }
+         [[ -w "${original_text_file}" ]] || { echoError "$(yellow_printf ORIGINAL_TEXT_FILE) is not writable." && usage; return 1; }
+         ;;
+      n) newlines_count="${OPTARG}"; [[ ${newlines_count} =~ ^[0-9]$ ]] || { echoError "$(yellow_printf NEWLINES_AFTER_PREP_TEXT_COUNT) cannot be empty." && usage; return 1; }
+         ;;
+      *) echoError "Not a valid option."; usage; return 1;;
+    esac
+  done
+  if ! [[ -n ${prepending_text} ]]; then
+    echoError "Must provide $(yellow_printf PREPENDING_TEXT)."
+    usage
+    return 1
+  elif ! ! [[ -f ${prepending_text_file} ]]; then
+    echoError "Must provide $(yellow_printf PREPENDING_TEXT_FILE)."
+    usage
+    return 1
+  elif ! [[ -f ${original_text_file} ]]; then
+    echoError "Must provide $(yellow_printf ORIGINAL_TEXT_FILE)."
+    usage
+    return 1
+  fi
+  if   [[ ${newlines_count} == 0 ]]; then
+    newlines=''
+  elif [[ ${newlines_count} != 0 ]]; then
+    #let "newlines_count--"
+    for (( i=1; i<${newlines_count}; i++ )) do
+      newlines+='\n'
+    done
+  fi
+  if   [[ -r "${prepending_text_file}" ]]; then
+    merged_text="$(printf '%s%b%s' "$(cat "${prepending_text_file}")" "${newlines}" "$(cat "${original_text_file}")")"
+    printf '%s' "${merged_text}" > "${original_text_file}"
+  elif [[ -n "${prepending_text}" ]]; then
+    merged_text="$(printf '%s%b%s' "${prepending_text}" "${newlines}" "$(cat "${original_text_file}")")"
+    printf '%s' "${merged_text}" > "${original_text_file}"
+  fi
+  unset -f usage
 }
 
 return
