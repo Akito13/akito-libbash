@@ -377,29 +377,29 @@ function prepend_text {
   local OPTIND
   function usage {
     ## Usage info output.
-      local indent='    '
-      white_echo "Usage"
-      echo
-      yellow_echo "${indent}${FUNCNAME[0]} -e <PREPENDING_TEXT>      -o <ORIGINAL_TEXT_FILE> [-n NEWLINES_AFTER_PREP_TEXT_COUNT]"
-      yellow_echo "${indent}${FUNCNAME[0]} -p <PREPENDING_TEXT_FILE> -o <ORIGINAL_TEXT_FILE> [-n NEWLINES_AFTER_PREP_TEXT_COUNT]"
-      echo
-      echo "${indent}Default amount of newlines after prepended text is ${newlines_count}."
-      echo
-      white_echo "Examples"
-      echo
-      yellow_echo "${indent}${FUNCNAME[0]} -e \"This sentence will be prepended.\" -o \"myfile.txt\" -n 3"
-      echo
-      echo "${indent}Prepend 'This sentence will be prepended.' to file 'myfile.txt'."
-      echo "${indent}3 newlines will be added to the end of the prepended text."
-      echo
-      echo
-      echo
-      yellow_echo "${indent}${FUNCNAME[0]} -p \"prepend.txt\" -o \"targetfile.txt\" -n 5"
-      echo
-      echo "${indent}Prepend the content of 'prepend.txt' to file 'targetfile.txt'."
-      echo "${indent}5 newlines will be added to the end of the prepended text."
-      echo
-      echo
+    local indent='    '
+    white_echo "Usage"
+    echo
+    yellow_echo "${indent}${FUNCNAME[0]} -e <PREPENDING_TEXT>      -o <ORIGINAL_TEXT_FILE> [-n NEWLINES_AFTER_PREP_TEXT_COUNT]"
+    yellow_echo "${indent}${FUNCNAME[0]} -p <PREPENDING_TEXT_FILE> -o <ORIGINAL_TEXT_FILE> [-n NEWLINES_AFTER_PREP_TEXT_COUNT]"
+    echo
+    echo "${indent}Default amount of newlines after prepended text is ${newlines_count}."
+    echo
+    white_echo "Examples"
+    echo
+    yellow_echo "${indent}${FUNCNAME[0]} -e \"This sentence will be prepended.\" -o \"myfile.txt\" -n 3"
+    echo
+    echo "${indent}Prepend 'This sentence will be prepended.' to file 'myfile.txt'."
+    echo "${indent}3 newlines will be added to the end of the prepended text."
+    echo
+    echo
+    echo
+    yellow_echo "${indent}${FUNCNAME[0]} -p \"prepend.txt\" -o \"targetfile.txt\" -n 5"
+    echo
+    echo "${indent}Prepend the content of 'prepend.txt' to file 'targetfile.txt'."
+    echo "${indent}5 newlines will be added to the end of the prepended text."
+    echo
+    echo
   }
   if [[ "${arg_count}" == 0 ]] || [[ "$1" =~ help|--help|-h ]]; then
     echoError "Invalid argument."
@@ -437,7 +437,6 @@ function prepend_text {
   if   [[ ${newlines_count} == 0 ]]; then
     newlines=''
   elif [[ ${newlines_count} != 0 ]]; then
-    #let "newlines_count--"
     for (( i=1; i<${newlines_count}; i++ )) do
       newlines+='\n'
     done
