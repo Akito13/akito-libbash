@@ -365,6 +365,7 @@ function pure_eval {
 }
 
 function prepend_text {
+  ## Prepends provided text to a text file.
   ## May break if input files are too large.
   ## By default adds a single \n to the prepending text.
   ## Run without arguments to get usage information.
@@ -390,6 +391,7 @@ function prepend_text {
     yellow_echo "${indent}${funcname} -p <PREPENDING_TEXT_FILE> -o <ORIGINAL_TEXT_FILE> [-n NEWLINES_AFTER_PREP_TEXT_COUNT]"
     echo
     echo "${indent}Default amount of newlines after prepended text is ${newlines_count}."
+    echo "${indent}Does not change contents of provided text. Literal \n won't be interpreted."
     echo
     white_echo "Examples"
     echo
