@@ -367,6 +367,7 @@ function pure_eval {
 function prepend_text {
   ## May break if input files are too large.
   ## By default adds a single \n to the prepending text.
+  local funcname="${FUNCNAME[0]}"
   local prepending_text
   local prepending_text_file
   local original_text_file
@@ -374,27 +375,31 @@ function prepend_text {
   local newlines_count=1
   local newlines='\n'
   local arg_count="$#"
+  local e=false
+  local p=false
+  local o=false
+  local n=false
   local OPTIND
   function usage {
     ## Usage info output.
     local indent='    '
     white_echo "Usage"
     echo
-    yellow_echo "${indent}${FUNCNAME[0]} -e <PREPENDING_TEXT>      -o <ORIGINAL_TEXT_FILE> [-n NEWLINES_AFTER_PREP_TEXT_COUNT]"
-    yellow_echo "${indent}${FUNCNAME[0]} -p <PREPENDING_TEXT_FILE> -o <ORIGINAL_TEXT_FILE> [-n NEWLINES_AFTER_PREP_TEXT_COUNT]"
+    yellow_echo "${indent}${funcname} -e <PREPENDING_TEXT>      -o <ORIGINAL_TEXT_FILE> [-n NEWLINES_AFTER_PREP_TEXT_COUNT]"
+    yellow_echo "${indent}${funcname} -p <PREPENDING_TEXT_FILE> -o <ORIGINAL_TEXT_FILE> [-n NEWLINES_AFTER_PREP_TEXT_COUNT]"
     echo
     echo "${indent}Default amount of newlines after prepended text is ${newlines_count}."
     echo
     white_echo "Examples"
     echo
-    yellow_echo "${indent}${FUNCNAME[0]} -e \"This sentence will be prepended.\" -o \"myfile.txt\" -n 3"
+    yellow_echo "${indent}${funcname} -e \"This sentence will be prepended.\" -o \"myfile.txt\" -n 3"
     echo
     echo "${indent}Prepend 'This sentence will be prepended.' to file 'myfile.txt'."
     echo "${indent}3 newlines will be added to the end of the prepended text."
     echo
     echo
     echo
-    yellow_echo "${indent}${FUNCNAME[0]} -p \"prepend.txt\" -o \"targetfile.txt\" -n 5"
+    yellow_echo "${indent}${funcname} -p \"prepend.txt\" -o \"targetfile.txt\" -n 5"
     echo
     echo "${indent}Prepend the content of 'prepend.txt' to file 'targetfile.txt'."
     echo "${indent}5 newlines will be added to the end of the prepended text."
@@ -408,28 +413,34 @@ function prepend_text {
   fi
   while getopts ":e:p:o:n:" opt; do
     case "${opt}" in
-      e) prepending_text="${OPTARG}"; [[ -n "${prepending_text}" ]] || { echoError "Must provide $(yellow_printf PREPENDING_TEXT) to option." && usage; return 1; }
+      e) e=true; prepending_text="${OPTARG}";
+         [[ -n "${prepending_text}" ]] || { echoError "Must provide $(yellow_printf PREPENDING_TEXT) to option." && usage; return 1; }
          ;;
-      p) prepending_text_file="${OPTARG}"; [[ -f "${prepending_text_file}" ]] || { echoError "$(yellow_printf PREPENDING_TEXT_FILE) unavailable." && usage; return 1; }
+      p) p=true; prepending_text_file="${OPTARG}";
+         [[ -f "${prepending_text_file}" ]] || { echoError "$(yellow_printf PREPENDING_TEXT_FILE) unavailable."     && usage; return 1; }
          [[ -r "${prepending_text_file}" ]] || { echoError "$(yellow_printf PREPENDING_TEXT_FILE) is not readable." && usage; return 1; }
          ;;
-      o) original_text_file="${OPTARG}"; [[ -f "${original_text_file}" ]] || { echoError "$(yellow_printf ORIGINAL_TEXT_FILE) unavailable." && usage; return 1; }
+      o) o=true; original_text_file="${OPTARG}";
+         [[ -f "${original_text_file}" ]] || { echoError "$(yellow_printf ORIGINAL_TEXT_FILE) unavailable."     && usage; return 1; }
          [[ -w "${original_text_file}" ]] || { echoError "$(yellow_printf ORIGINAL_TEXT_FILE) is not writable." && usage; return 1; }
          ;;
-      n) newlines_count="${OPTARG}"; [[ ${newlines_count} =~ ^[0-9]$ ]] || { echoError "$(yellow_printf NEWLINES_AFTER_PREP_TEXT_COUNT) cannot be empty." && usage; return 1; }
+      n) n=true; newlines_count="${OPTARG}";
+         [[ ${newlines_count} =~ ^[0-9]$ ]] || { echoError "$(yellow_printf NEWLINES_AFTER_PREP_TEXT_COUNT) must be a number." && usage; return 1; }
          ;;
       *) echoError "Not a valid option."; usage; return 1;;
     esac
   done
-  if ! [[ -n ${prepending_text} ]]; then
+  if [[ $e == true ]] && ! [[ -n ${prepending_text} ]]; then
     echoError "Must provide $(yellow_printf PREPENDING_TEXT)."
     usage
     return 1
-  elif ! ! [[ -f ${prepending_text_file} ]]; then
+  fi
+  if [[ $p == true ]] && ! [[ -f ${prepending_text_file} ]]; then
     echoError "Must provide $(yellow_printf PREPENDING_TEXT_FILE)."
     usage
     return 1
-  elif ! [[ -f ${original_text_file} ]]; then
+  fi
+  if ! [[ -f ${original_text_file} ]]; then
     echoError "Must provide $(yellow_printf ORIGINAL_TEXT_FILE)."
     usage
     return 1
