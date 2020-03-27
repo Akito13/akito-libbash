@@ -367,6 +367,7 @@ function pure_eval {
 function prepend_text {
   ## May break if input files are too large.
   ## By default adds a single \n to the prepending text.
+  ## Run without arguments to get usage information.
   local funcname="${FUNCNAME[0]}"
   local prepending_text
   local prepending_text_file
@@ -430,12 +431,15 @@ function prepend_text {
       *) echoError "Not a valid option."; usage; return 1;;
     esac
   done
-  if [[ $e == true ]] && ! [[ -n ${prepending_text} ]]; then
+  if [[ $e == true ]] && [[ $p == true ]]; then
+    echoError "Can only provide either $(yellow_printf PREPENDING_TEXT) or $(yellow_printf PREPENDING_TEXT_FILE). Not both."
+    usage
+    return 1
+  elif [[ $e == true ]] && ! [[ -n ${prepending_text} ]]; then
     echoError "Must provide $(yellow_printf PREPENDING_TEXT)."
     usage
     return 1
-  fi
-  if [[ $p == true ]] && ! [[ -f ${prepending_text_file} ]]; then
+  elif [[ $p == true ]] && ! [[ -f ${prepending_text_file} ]]; then
     echoError "Must provide $(yellow_printf PREPENDING_TEXT_FILE)."
     usage
     return 1
