@@ -459,10 +459,10 @@ function prepend_text {
     done
   fi
   if   [[ -r "${prepending_text_file}" ]]; then
-    merged_text="$(printf '%s%b%s' "$(cat "${prepending_text_file}")" "${newlines}" "$(cat "${original_text_file}")")"
+    merged_text="$(printf '%s%b%s' "$(<"${prepending_text_file}")" "${newlines}" "$(<"${original_text_file}")")"
     printf '%s' "${merged_text}" > "${original_text_file}"
   elif [[ -n "${prepending_text}" ]]; then
-    merged_text="$(printf '%s%b%s' "${prepending_text}" "${newlines}" "$(cat "${original_text_file}")")"
+    merged_text="$(printf '%s%b%s' "${prepending_text}" "${newlines}" "$(<"${original_text_file}")")"
     printf '%s' "${merged_text}" > "${original_text_file}"
   fi
   unset -f usage
