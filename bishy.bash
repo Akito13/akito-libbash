@@ -147,6 +147,7 @@ function path {
   ## path exists this # Shows if current working dir is part of PATH.
   ##
   ## path exists /usr/special # Shows if '/usr/special' is in PATH.
+  local funcname="${FUNCNAME[0]}"
   function format_PATH {
     echo -e "${PATH//:/\\n}"
   }
@@ -156,16 +157,62 @@ function path {
   }
   function path_exists {
     local path="$1"
-    echoInfo "${path} does exist."
+    echoInfo "${path} is included in PATH."
   }
   function path_exists_not {
     local path="$1"
-    echoInfo "${path} does not exist."
+    echoInfo "${path} is not included in PATH."
   }
   function export_custom_path {
     local IFS=":"
     export PATH="${PATH}:$(printf "$*")"
     unset IFS
+  }
+  function usage {
+    ## Usage info output.
+    local indent='    '
+    white_echo "Usage"
+    echo
+    yellow_echo "${indent}${funcname} [command] <PATH>"
+    echo
+    echo
+    white_echo "Examples"
+    echo
+    yellow_echo "${indent}${funcname} this"
+    echo
+    echo "${indent}Adds current working directory to PATH."
+    echo
+    echo
+    echo
+    yellow_echo "${indent}${funcname} /usr/special"
+    echo
+    echo "${indent}Adds '/usr/special' to PATH."
+    echo
+    echo
+    echo
+    yellow_echo "${indent}${funcname} remove this"
+    echo
+    echo "${indent}Removes current working directory from PATH."
+    echo
+    echo
+    echo
+    yellow_echo "${indent}${funcname} remove /usr/special"
+    echo
+    echo "${indent}Removes '/usr/special' from PATH."
+    echo
+    echo
+    echo
+    yellow_echo "${indent}${funcname} exists this"
+    echo
+    echo "${indent}Shows if current working directory is included in PATH."
+    echo
+    echo
+    echo
+    yellow_echo "${indent}${funcname} exists /usr/special"
+    echo
+    echo "${indent}Shows if '/usr/special' is included in PATH."
+    echo
+    echo
   }
   function remove_custom_path {
     ## This complicated function is needed to
@@ -232,7 +279,10 @@ function path {
       return 1
     fi
   }
-  if [[ "$1" == "this" ]]; then
+  if   [[ "$#" == 0 ]]; then
+    echoError "Please provide a path."
+    usage
+  elif [[ "$1" == "this" ]]; then
     local testPath="${PWD}"
     if does_path_exist "${testPath}"; then
       dup_warn
@@ -245,7 +295,7 @@ function path {
       if does_path_exist "${entry}"; then
         remove_custom_path "${entry}"
       else
-        path_exists_not
+        path_exists_not "${testPath}"
       fi
     done
   elif [[ "$1" == "remove" && "$2" == "this" ]]; then
@@ -254,25 +304,25 @@ function path {
       remove_custom_path "${unnecessaryPath}"
       return 0
     else
-      path_exists_not
+      path_exists_not "${testPath}"
       return 1
     fi
   elif [[ "$1" == "exists" && "$2" != "this" ]]; then
     local testPath="$2"
     if does_path_exist "${testPath}"; then
-      path_exists
+      path_exists "${testPath}"
       return 0
     else
-      path_exists_not
+      path_exists_not "${testPath}"
       return 1
     fi
   elif [[ "$1" == "exists" && "$2" == "this" ]]; then
     local testPath="${PWD}"
     if does_path_exist "${testPath}"; then
-      path_exists
+      path_exists "${testPath}"
       return 0
     else
-      path_exists_not
+      path_exists_not "${testPath}"
       return 1
     fi
   else
