@@ -34,9 +34,9 @@ function setPromptStyle {
   ## $USER@$HOSTNAME:~/src$
   local bashrcFile="$1"
   if [[ $(grep -q '###startvzUMjwTuyMofDHhBQSHXPZeWWOljAbxQfcKWmpybkFXyrDAtklSJFNJW###' "$bashrcFile")$? == 0 ]]; then
-    sed -in '/###startvzUMjwTuyMofDHhBQSHXPZeWWOljAbxQfcKWmpybkFXyrDAtklSJFNJW###/,/###endvzUMjwTuyMofDHhBQSHXPZeWWOljAbxQfcKWmpybkFXyrDAtklSJFNJW###/{//!d}' "${bashrcFile}"
-    sed -in '/###startvzUMjwTuyMofDHhBQSHXPZeWWOljAbxQfcKWmpybkFXyrDAtklSJFNJW###/d' "${bashrcFile}"
-    sed -in '/###endvzUMjwTuyMofDHhBQSHXPZeWWOljAbxQfcKWmpybkFXyrDAtklSJFNJW###/d'   "${bashrcFile}"
+    sed -i '/###startvzUMjwTuyMofDHhBQSHXPZeWWOljAbxQfcKWmpybkFXyrDAtklSJFNJW###/,/###endvzUMjwTuyMofDHhBQSHXPZeWWOljAbxQfcKWmpybkFXyrDAtklSJFNJW###/{//!d}' "${bashrcFile}"
+    sed -i '/###startvzUMjwTuyMofDHhBQSHXPZeWWOljAbxQfcKWmpybkFXyrDAtklSJFNJW###/d' "${bashrcFile}"
+    sed -i '/###endvzUMjwTuyMofDHhBQSHXPZeWWOljAbxQfcKWmpybkFXyrDAtklSJFNJW###/d'   "${bashrcFile}"
   fi
   printf "\n\n\n\n" >> "${bashrcFile}"
   truncEmptyLines "${bashrcFile}"
