@@ -45,7 +45,7 @@ function checkSrc { (return 0 2>/dev/null); if [[ "$?" == 0 ]]; then return 0; e
 function whereAmI { printf "$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )";   }                     #
 # Alternatively, this alias works in the sourcing script, but you need to enable alias expansion.                       #
 alias whereIsMe='printf "$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"'                            #
-debug_flag=false
+debug_flag=false                                                                                                        #
 #########################################################################################################################
 
 function mergeEmptyLines {

@@ -44,11 +44,8 @@ function setPromptStyle {
 
 ###startvzUMjwTuyMofDHhBQSHXPZeWWOljAbxQfcKWmpybkFXyrDAtklSJFNJW###
 function git_info {
-  git status >/dev/null 2>&1
-  if [[ $? == 0 ]]; then
+  if [[ -d .git || $(git rev-parse --git-dir >/dev/null 2>&1)$? == 0 ]]; then
     printf " \033[0;36m~ $(git rev-parse --abbrev-ref HEAD 2>/dev/null)\033[00m:\033[49;96m$(git log -1 --format="%H" | cut -c -7)\033[00m~>\033[38;5;50m\"$(git log -1 --oneline --pretty=%B | cut -d$'\n' -f1 | cut -c -24)\"\033[00m"
-  else
-    :
   fi
 }
 if [[ "$EUID" != 0 ]]; then
