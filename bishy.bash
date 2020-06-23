@@ -518,4 +518,44 @@ function prepend_text {
   unset -f usage
 }
 
+function get_longOpt {
+  ## Pass all the script's long options
+  ## that contain an argument to this function.
+  ## It will parse all long options with its arguments,
+  ## will convert the option name to a variable and
+  ## convert its option value to the variable's value.
+  ## Works properly when providing long options, only.
+  ##
+  ####  Usage
+  ##
+  ## get_longOpt $@
+  ##
+  ##  May expand to:
+  ##
+  ## get_longOpt --myOption optimopti --longNumber 1000 --hexNumber 0x16
+  ##
+  ##  Results in the bash interpretation of:
+  ## myOption=optimopti
+  ## longNumber=1000
+  ## hexNumber=0x16
+  ##
+  local -a opt_list=( $@ )
+  local -A opt_map
+  local -i index=0
+  for item in ${opt_list[@]}; do
+    # Convert arg list to map.
+    let index++
+    if [[ "${item}" == --* ]]; then
+      item="$(printf '%s' "${item##*-}")"
+      opt_map[${item}]="${opt_list[$index]}"
+    fi
+  done
+  for item in ${!opt_map[@]}; do
+    # Convert map keys to shell vars.
+    value="${opt_map[$item]}"
+    [[ ! -z "${value}" ]] && \
+    printf -v "$item" '%s' "$value"
+  done
+}
+
 return
