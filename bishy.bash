@@ -519,12 +519,14 @@ function prepend_text {
 }
 
 function get_longOpt {
-  ## Pass all the script's long options
-  ## that contain an argument to this function.
+  ## Pass all the script's long options to this function.
   ## It will parse all long options with its arguments,
   ## will convert the option name to a variable and
   ## convert its option value to the variable's value.
+  ## If the option does not have an argument, the
+  ## resulting variable's value will be set to true.
   ## Works properly when providing long options, only.
+  ## Arguments to options may not start with two dashes.
   ##
   ####  Usage
   ##
@@ -534,7 +536,7 @@ function get_longOpt {
   ##
   ## get_longOpt --myOption optimopti --longNumber 1000 --enableMe --hexNumber 0x16
   ##
-  ##  Results in the bash interpretation of:
+  ### Results in the bash interpretation of:
   ## myOption=optimopti
   ## longNumber=1000
   ## enableMe=true
