@@ -532,22 +532,33 @@ function get_longOpt {
   ##
   ##  May expand to:
   ##
-  ## get_longOpt --myOption optimopti --longNumber 1000 --hexNumber 0x16
+  ## get_longOpt --myOption optimopti --longNumber 1000 --enableMe --hexNumber 0x16
   ##
   ##  Results in the bash interpretation of:
   ## myOption=optimopti
   ## longNumber=1000
+  ## enableMe=true
   ## hexNumber=0x16
   ##
   local -a opt_list=( $@ )
   local -A opt_map
   local -i index=0
+  local next_item
   for item in ${opt_list[@]}; do
     # Convert arg list to map.
     let index++
-    if [[ "${item}" == --* ]]; then
-      item="$(printf '%s' "${item##*-}")"
-      opt_map[${item}]="${opt_list[$index]}"
+    item="$(printf '%s' "${item##*-}")"
+    next_item="${opt_list[$index]}"
+    if   [[ "${item}" == --* ]] \
+      && [[ "${next_item}" != --* ]] \
+      || [[ ! -z "${next_item}" ]]
+    then
+      opt_map[${item}]="${next_item}"
+    elif [[ "${item}" == --* ]] \
+      && [[ "${next_item}" == --* ]] \
+      || [[ -z "${next_item}" ]]
+    then
+      opt_map[${item}]=true
     fi
   done
   for item in ${!opt_map[@]}; do
