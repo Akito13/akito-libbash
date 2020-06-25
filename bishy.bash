@@ -549,17 +549,18 @@ function get_longOpt {
   for item in ${opt_list[@]}; do
     # Convert arg list to map.
     let index++
-    item="$(printf '%s' "${item##*-}")"
     next_item="${opt_list[$index]}"
     if   [[ "${item}" == --* ]] \
       && [[ "${next_item}" != --* ]] \
-      || [[ ! -z "${next_item}" ]]
+      && [[ ! -z "${next_item}" ]]
     then
+      item="$(printf '%s' "${item##*-}")"
       opt_map[${item}]="${next_item}"
     elif [[ "${item}" == --* ]] \
-      && [[ "${next_item}" == --* ]] \
-      || [[ -z "${next_item}" ]]
+      && { [[ "${next_item}" == --* ]] \
+      || [[ -z "${next_item}" ]]; }
     then
+      item="$(printf '%s' "${item##*-}")"
       opt_map[${item}]=true
     fi
   done
