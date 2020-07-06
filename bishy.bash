@@ -32,8 +32,8 @@ function white_brackets { local args="$@"; white_printf "["; printf "${args}"; w
 function echoDebug  { local args="$@"; if [[ ${debug_flag} == true ]]; then                                             #
 white_brackets "$(white_printf   "DEBUG")" && echo " ${args}"; fi; }                                                    #
 function echoInfo   { local args="$@"; white_brackets "$(green_printf  "INFO" )"  && echo " ${args}"; }                 #
-function echoWarn   { local args="$@"; white_brackets "$(yellow_printf "WARN" )"  && echo " ${args}"; 1>&2; }           #
-function echoError  { local args="$@"; white_brackets "$(red_printf    "ERROR")"  && echo " ${args}"; 1>&2; }           #
+function echoWarn   { local args="$@"; white_brackets "$(yellow_printf "WARN" )"  && echo " ${args}" 1>&2; }           #
+function echoError  { local args="$@"; white_brackets "$(red_printf    "ERROR")"  && echo " ${args}" 1>&2; }           #
 # Silences commands' STDOUT as well as STDERR.                                                                          #
 function silence { local args="$@"; ${args} &>/dev/null; }                                                              #
 # Check your privilege.                                                                                                 #
