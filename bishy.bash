@@ -572,4 +572,52 @@ function get_longOpt {
   done
 }
 
+function within {
+  ## Executes anything within given directories.
+  ## All arguments up to the "do" keyword count
+  ## as directories, while all arguments after
+  ## this keyword count as commands to be
+  ## interpreted by bash.
+  ## Absolute paths and relative paths work
+  ## equally well. If passing a var or command
+  ## that is to be expanded, then you need to
+  ## escape it, if it depends on the location,
+  ## like for example `git status` or `pwd`.
+  ## Alternatively, you can put the commands
+  ## in single quotes, to prevent premature
+  ## expansion.
+  ##
+  ####  Usage
+  ##
+  ## within go murmur do 'echo Greetings from $(pwd)!'
+  ##
+  ### Output:
+  ##
+  ## Greetings from /home/go!
+  ## Greetings from /home/murmur!
+  ##
+  local -ar orig_arg_list=( "$@" )
+  local original_dir="$(pwd)"
+  local -a target_dir_list
+  local -a arg_list
+  local found_keyword=false
+  for arg in "${orig_arg_list[@]}"; do
+    if  [[ "${arg}" != "do" ]] && \
+        [[ "${found_keyword}" == "false" ]]
+    then
+      target_dir_list+=( "${arg}" )
+    elif [[ "${arg}" == "do" ]]; then
+      found_keyword=true
+      continue
+    elif [[ "${found_keyword}" == "true" ]]; then
+      arg_list+=( "${arg}" )
+    fi
+  done
+  for dir in "${target_dir_list[@]}"; do
+    cd "${dir}"
+    bash -c "${arg_list[*]}"
+    cd "${original_dir}"
+  done
+}
+
 return

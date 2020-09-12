@@ -29,3 +29,11 @@
 # Local History for Visual Studio Code
 .history/
 
+# Test files
+glo_example.sh
+orig.txt
+prepend.txt
+testFile
+testing_args.sh
+testing_sed.sh
+testing.sh
