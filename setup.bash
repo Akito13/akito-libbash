@@ -33,6 +33,7 @@ function setPromptStyle {
   ## If not in a Git repository:
   ## $USER@$HOSTNAME:~/src$
   local bashrcFile="$1"
+  [[ -z "${bashrcFile}" ]] && echoError 'No ".bashrc" or "/etc/bash.bashrc" file provided. Try again.' && return 1
   if [[ $(grep -q '###startvzUMjwTuyMofDHhBQSHXPZeWWOljAbxQfcKWmpybkFXyrDAtklSJFNJW###' "$bashrcFile")$? == 0 ]]; then
     sed -i '/###startvzUMjwTuyMofDHhBQSHXPZeWWOljAbxQfcKWmpybkFXyrDAtklSJFNJW###/,/###endvzUMjwTuyMofDHhBQSHXPZeWWOljAbxQfcKWmpybkFXyrDAtklSJFNJW###/{//!d}' "${bashrcFile}"
     sed -i '/###startvzUMjwTuyMofDHhBQSHXPZeWWOljAbxQfcKWmpybkFXyrDAtklSJFNJW###/d' "${bashrcFile}"
@@ -55,6 +56,12 @@ else
 fi
 ###endvzUMjwTuyMofDHhBQSHXPZeWWOljAbxQfcKWmpybkFXyrDAtklSJFNJW###
 EOF
+}
+function setPythonAlternatives {
+  ## Sets Python alternatives.
+  ## Can be always switched with `python_switch` from bishy.bash.
+  update-alternatives --install /usr/bin/python python /usr/bin/python2 200
+  update-alternatives --install /usr/bin/python python /usr/bin/python3 300
 }
 unset hereIam
 return
